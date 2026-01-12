@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket Player Auction</title>
+    <title>Civil Premier League - PDF Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -13,2251 +14,632 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 200px;
-            height: 200px;
-            background-image: url('https://munnacodsit.xyz/Tournament-Lottery/in/sir/cpl.png');
-            background-size: cover;
-            background-position: center;
-            border-radius: 15px;
-            z-index: 1;
-        }
-
-        .team-budget-box {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: white;
-            border-radius: 12px;
-            padding: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            z-index: 1;
-            max-width: 250px;
-            font-size: 0.85em;
-        }
-
-        .team-budget-box h3 {
-            color: #1e5128;
-            font-size: 1em;
-            margin-bottom: 8px;
-            text-align: center;
-            border-bottom: 2px solid #1e5128;
-            padding-bottom: 5px;
-        }
-
-        .team-budget-item {
             display: flex;
-            justify-content: space-between;
-            padding: 4px 0;
-            font-size: 0.9em;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .team-budget-item:last-child {
-            border-bottom: none;
-        }
-
-        .team-budget-name {
-            font-weight: bold;
-            color: #9333ea;
-            flex: 1;
-        }
-
-        .team-budget-amount {
-            font-weight: bold;
-            color: #059669;
-            margin-left: 8px;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        .category-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .category-tab {
-            background: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .category-tab:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
-
-        .category-tab.active {
-            background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
-            color: white;
-        }
-
-        .category-tab.iconic { border: 3px solid #9333ea; }
-        .category-tab.normal { border: 3px solid #0284c7; }
-
-        .bank-panel {
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            text-align: center;
-        }
-
-        .bank-panel h2 {
-            color: #1e5128;
-            margin-bottom: 12px;
-            font-size: 1.4em;
-        }
-
-        .bank-input-group {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .bank-input-group input {
-            padding: 8px;
-            border: 2px solid #d1d5db;
-            border-radius: 5px;
-            font-size: 0.9em;
-            width: 180px;
-            text-align: center;
-        }
-
-        .bank-input-group button {
-            background: #059669;
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        .bank-input-group button:hover {
-            background: #047857;
-        }
-
-        .bank-input-group .btn-increment {
-            background: #f59e0b;
-        }
-
-        .bank-input-group .btn-increment:hover {
-            background: #d97706;
-        }
-
-        .bank-input-group .btn-decrement {
-            background: #dc2626;
-        }
-
-        .bank-input-group .btn-decrement:hover {
-            background: #991b1b;
-        }
-
-        .bank-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .bank-actions button {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85em;
-            font-weight: bold;
-            transition: background 0.3s;
-        }
-
-        .btn-result-sheet {
-            background: #0284c7;
-            color: white;
-        }
-
-        .btn-result-sheet:hover {
-            background: #0369a1;
-        }
-        
-        .btn-reset-data {
-            background: #dc2626;
-            color: white;
-        }
-
-        .btn-reset-data:hover {
-            background: #991b1b;
-        }
-
-        .player-screen {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            text-align: center;
-            min-height: 400px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .player-image-large {
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            object-fit: contain;
-            object-position: center;
-            margin: 0 auto 15px;
-            border: 6px solid #ea580c;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            background-color: #f3f4f6;
-        }
-
-        .player-name-large {
-            font-size: 2em;
-            font-weight: bold;
-            color: #1f2937;
-            margin-bottom: 10px;
-        }
-
-        .player-category-badge {
-            display: inline-block;
-            padding: 6px 20px;
-            border-radius: 25px;
-            font-size: 1.1em;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-        .badge-iconic {
-            background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
-            color: white;
-        }
-
-        .badge-normal {
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-            color: white;
-        }
-
-        .price-info-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .base-price-display {
-            font-size: 1.3em;
-            color: #1e5128;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .sold-price-display {
-            font-size: 1.8em;
-            color: #dc2626;
-            font-weight: bold;
-        }
-
-        .team-selector {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
-
-        .team-btn {
-            background: white;
-            color: #1f2937;
-            padding: 8px 15px;
-            border: 3px solid #d1d5db;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .team-btn:hover {
-            transform: scale(1.05);
-            border-color: #9333ea;
-        }
-
-        .team-btn.selected {
-            background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
-            color: white;
-            border-color: #9333ea;
-        }
-
-        .navigation-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        .nav-btn {
-            background: #ea580c;
-            color: white;
-            padding: 10px 25px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .nav-btn:hover {
-            background: #dc2626;
-            transform: scale(1.05);
-        }
-
-        .nav-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-            transform: scale(1);
-        }
-
-        .player-counter {
-            font-size: 1.1em;
-            color: #6b7280;
-            margin-top: 12px;
-        }
-
-        .no-players {
-            font-size: 1.5em;
-            color: #6b7280;
-            padding: 100px 20px;
-        }
-
-        /* Welcome Page Styles */
-        .welcome-page-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #1e5128 0%, #2d6a4f 50%, #40916c 100%);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            overflow: hidden;
-        }
-
-        .welcome-content {
-            position: relative;
-            width: 90%;
-            max-width: 1000px;
-            height: 90vh;
             background: white;
             border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            max-width: 900px;
+            width: 100%;
         }
 
-        .firework {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            animation: explode 1s ease-out forwards;
-        }
-
-        @keyframes explode {
-            0% {
-                transform: translate(0, 0);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--tx), var(--ty));
-                opacity: 0;
-            }
-        }
-
-        .welcome-player-image-container {
-            margin-bottom: 30px;
-            opacity: 0;
-            animation: fadeInImage 1s ease-out forwards;
-            animation-delay: 1s;
-        }
-
-        .welcome-player-img {
-            width: 350px;
-            height: 350px;
-            object-fit: contain;
-            object-position: center;
-            border: 8px solid #9333ea;
-            border-radius: 15px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            background-color: #f3f4f6;
-        }
-
-        @keyframes fadeInImage {
-            from {
-                opacity: 0;
-                transform: scale(0.8) rotate(-5deg);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) rotate(0deg);
-            }
-        }
-
-        .welcome-message {
+        .header {
             text-align: center;
-            max-width: 800px;
-            opacity: 0;
-            animation: fadeInText 1s ease-out forwards;
-            animation-delay: 1.5s;
+            margin-bottom: 30px;
         }
 
-        .welcome-team-name {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #9333ea;
-            margin-bottom: 12px;
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
-        .welcome-player-name {
-            font-size: 2em;
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .preview {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .category {
+            margin-bottom: 30px;
+        }
+
+        .category-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.3em;
             font-weight: bold;
-            color: #dc2626;
             margin-bottom: 15px;
         }
 
-        .welcome-text {
-            font-size: 1em;
-            line-height: 1.5;
-            color: #1f2937;
-            margin-bottom: 8px;
-        }
-
-        .welcome-signature {
-            font-size: 1em;
-            font-weight: bold;
-            color: #059669;
-            margin-top: 20px;
-        }
-
-        @keyframes fadeInText {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .close-welcome-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #dc2626;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            z-index: 10;
-        }
-
-        .close-welcome-btn:hover {
-            background: #991b1b;
-        }
-
-        .result-sheet-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .result-sheet-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 90%;
-            max-height: 90%;
-            overflow-y: auto;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
-        }
-
-        .result-sheet-content h2 {
-            color: #1e5128;
+        .class-section {
             margin-bottom: 20px;
-            text-align: center;
+            padding-left: 20px;
         }
 
-        .team-tabs {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .team-tab {
-            background: white;
-            color: #1f2937;
-            padding: 12px 20px;
-            border: 3px solid #d1d5db;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .team-tab:hover {
-            transform: scale(1.05);
-            border-color: #9333ea;
-        }
-
-        .team-tab.active-team {
-            background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
-            color: white;
-            border-color: #9333ea;
-        }
-
-        .view-tabs {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .view-tab {
-            background: white;
-            color: #1f2937;
-            padding: 12px 30px;
-            border: 3px solid #d1d5db;
-            border-radius: 8px;
-            cursor: pointer;
+        .class-title {
+            color: #667eea;
             font-size: 1.1em;
             font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .view-tab:hover {
-            transform: scale(1.05);
-            border-color: #0284c7;
-        }
-
-        .view-tab.active-view {
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-            color: white;
-            border-color: #0284c7;
-        }
-
-        .team-players-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .player-card {
-            background: white;
-            border: 3px solid #9333ea;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .player-card-image {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: contain;
-            object-position: center;
-            margin: 0 auto 10px;
-            border: 4px solid #9333ea;
-            background-color: #f3f4f6;
-        }
-
-        .player-card-name {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #1f2937;
-            margin-bottom: 8px;
-        }
-
-        .player-card-price {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #059669;
-        }
-
-        .no-team-players {
-            text-align: center;
-            color: #6b7280;
-            font-size: 1.2em;
-            padding: 40px;
-        }
-
-        .result-sheet-content table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        .result-sheet-content th, .result-sheet-content td {
-            color: #1f2937;
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-
-        .result-sheet-content th {
-            background-color: #f3f4f6;
-            color: #1f2937;
-        }
-
-        .result-sheet-content .close-btn {
-            background: #dc2626;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            display: block;
-            margin: 0 auto;
-        }
-
-        .result-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .btn-download-pdf {
-            background: #059669;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-        }
-
-        .btn-download-pdf:hover {
-            background: #047857;
-        }
-
-        .pdf-preview {
-            display: none;
-            position: fixed;
-            left: -9999px;
-            top: 0;
-        }
-
-        .pdf-page {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 15mm;
-            background: white;
-            box-sizing: border-box;
-            page-break-after: always;
             margin-bottom: 10px;
-        }
-
-        .pdf-page h1 {
-            text-align: center;
-            color: #1e5128;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        .pdf-page-number {
-            text-align: center;
-            color: #6b7280;
-            font-size: 12px;
-            margin-top: 20px;
-            padding-top: 10px;
-            border-top: 1px solid #d1d5db;
-        }
-
-        .pdf-page table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 11px;
-        }
-
-        .pdf-page th, .pdf-page td {
-            border: 1px solid #ddd;
             padding: 8px;
-            text-align: left;
+            background: #e8eaf6;
+            border-radius: 5px;
         }
 
-        .pdf-page th {
-            background-color: #1e5128;
+        .player {
+            padding: 8px 15px;
+            margin: 5px 0;
+            background: white;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .player-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .player-class {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .player-category {
+            background: #764ba2;
             color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+        }
+
+        .iconic-player {
+            border-left-color: #ffd700;
+        }
+
+        .iconic-player .player-category {
+            background: #ffd700;
+            color: #333;
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3em;
             font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .pdf-page tr:nth-child(even) {
-            background-color: #f3f4f6;
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
 
-        .pdf-page .sold {
-            color: #059669;
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
             font-weight: bold;
+            margin-bottom: 5px;
         }
 
-        .pdf-page .unsold {
-            color: #ea580c;
-            font-weight: bold;
-        }
-
-        @media (max-width: 600px) {
-            body::before {
-                width: 100px;
-                height: 100px;
-                top: 10px;
-                right: 10px;
-            }
-
-            .team-budget-box {
-                display: none;
-            }
-
-            body {
-                padding: 10px;
-            }
-
-            .category-tabs {
-                gap: 10px;
-            }
-
-            .category-tab {
-                padding: 10px 15px;
-                font-size: 1em;
-            }
-
-            .bank-panel {
-                padding: 15px;
-            }
-
-            .bank-panel h2 {
-                font-size: 1.5em;
-            }
-
-            .bank-input-group {
-                flex-direction: column;
-            }
-
-            .bank-input-group input {
-                width: 100%;
-            }
-
-            .bank-actions {
-                flex-direction: column;
-            }
-
-            .bank-actions button {
-                width: 100%;
-            }
-
-            .player-image-large {
-                width: 250px;
-                height: 250px;
-            }
-
-            .player-name-large {
-                font-size: 2em;
-            }
-
-            .player-category-badge {
-                font-size: 1.2em;
-            }
-
-            .welcome-player-img {
-                width: 250px;
-                height: 250px;
-            }
-
-            .welcome-team-name {
-                font-size: 1.8em;
-            }
-
-            .welcome-player-name {
-                font-size: 1.8em;
-            }
-
-            .welcome-text {
-                font-size: 1.1em;
-            }
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
-    <div class="team-budget-box" id="teamBudgetBox"></div>
     <div class="container">
-        <div class="bank-panel">
-            <h2>CIVIL PREMIER LEAGUE</h2>
-            <div class="bank-input-group">
-                <input type="number" id="auctionPriceInput" placeholder="Enter sold price (e.g., 150)" readonly>
-                <button onclick="incrementPrice()" class="btn-increment">💰 Increase Price</button>
-                <button onclick="setAuctionPrice()">Set Price</button>
-                <span style="color: white; font-size: 0.8em; margin-left: 10px;">💡 Ctrl+I = Increase | Ctrl+M = Decrease | Ctrl+P = Position</span>
+        <div class="header">
+            <h1>⚽ CIVIL PREMIER LEAGUE</h1>
+            <p>Player Database - PDF Generator</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number">10</div>
+                <div class="stat-label">Iconic Players</div>
             </div>
-            <div class="bank-actions">
-                <button class="btn-reset-data" onclick="startSecondRound()" style="background: #f59e0b;">
-                    🔄 Start 2nd Round (UNSOLD → 20)
-                </button>
-                <button class="btn-result-sheet" onclick="showResultSheet()">
-                    View Result Sheet
-                </button>
-                <button class="btn-reset-data" onclick="resetData()">
-                    Complete Reset (Delete All Data)
-                </button>
+            <div class="stat-box">
+                <div class="stat-number">64</div>
+                <div class="stat-label">Normal Players</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">74</div>
+                <div class="stat-label">Total Players</div>
             </div>
         </div>
 
-        <div class="category-tabs">
-            <div class="category-tab iconic active" onclick="changeCategory('ICONIC')">
-                👑 Iconic Player
-            </div>
-            <div class="category-tab normal" onclick="changeCategory('NORMAL')">
-                ⭐ Normal Player
-            </div>
-        </div>
-
-        <div class="player-screen" id="playerScreen"></div>
-
-        <!-- Welcome Page -->
-        <div class="welcome-page-overlay" id="welcomePageOverlay">
-            <div class="welcome-content">
-                <button class="close-welcome-btn" onclick="closeWelcomePage()">✖ Close</button>
-                
-                <div class="welcome-player-image-container" id="welcomePlayerImageContainer"></div>
-                
-                <div class="welcome-message" id="welcomeMessage"></div>
-            </div>
-        </div>
-
-        <div class="result-sheet-overlay" id="resultSheetOverlay" onclick="hideResultSheet(event)">
-            <div class="result-sheet-content" onclick="event.stopPropagation()">
-                <h2>CIVIL PREMIER LEAGUE</h2>
-                
-                <div class="view-tabs">
-                    <div class="view-tab active-view" onclick="changeView('all')">
-                        Complete Result
+        <div class="preview">
+            <div class="category">
+                <div class="category-title">⭐ Iconic Player Category</div>
+                <div class="class-section">
+                    <div class="player iconic-player">
+                        <span class="player-name">HAMZA</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Iconic Player</span>
                     </div>
-                    <div class="view-tab" onclick="changeView('team')">
-                        By Team
+                    <div class="player iconic-player">
+                        <span class="player-name">SHIHAB</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Iconic Player</span>
+                    </div>
+                    <div class="player iconic-player">
+                        <span class="player-name">SAJIB</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Iconic Player</span>
+                    </div>
+                    <div class="player iconic-player">
+                        <span class="player-name">SABBIR</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Iconic Player</span>
+                    </div>
+                    <div class="player iconic-player">
+                        <span class="player-name">GALIB ✅</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Iconic Player</span>
+                    </div>
+                    <div class="player iconic-player">
+                        <span class="player-name">BULBUL</span>
+                        <span class="player-class">Class 11</span>
+                        <span class="player-category">Iconic Player</span>
+                    </div>
+                    <div class="player iconic-player">
+                        <span class="player-name">ARPON</span>
+                        <span class="player-class">Class 11</span>
+                        <span class="player-category">Iconic Player</span>
+                    </div>
+                    <div class="player iconic-player">
+                        <span class="player-name">NUTON</span>
+                        <span class="player-class">Class Not Given</span>
+                        <span class="player-category">Iconic Player</span>
+                    </div>
+                    <div class="player iconic-player">
+                        <span class="player-name">MRITTUNJOY</span>
+                        <span class="player-class">Class Not Given</span>
+                        <span class="player-category">Iconic Player</span>
+                    </div>
+                    <div class="player iconic-player">
+                        <span class="player-name">SHAGOR</span>
+                        <span class="player-class">Class Not Given</span>
+                        <span class="player-category">Iconic Player</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category">
+                <div class="category-title">🔹 Normal Player Category</div>
+                
+                <div class="class-section">
+                    <div class="class-title">▶ Class 12</div>
+                    <div class="player">
+                        <span class="player-name">DIBBO</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">ZIHAD</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">MUNNA</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">ARAFAT</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SAJU</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">MASUD</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">JAHID</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">MOHIBUR</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">RANA</span>
+                        <span class="player-class">Class 12</span>
+                        <span class="player-category">Normal Player</span>
                     </div>
                 </div>
 
-                <div id="teamTabsContainer" style="display: none;">
-                    <div class="team-tabs">
-                        <div class="team-tab active-team" onclick="showTeamPlayers('Dumuria Kings')">
-                            Dumuria Kings
-                        </div>
-                        <div class="team-tab" onclick="showTeamPlayers('Dumuria Strikers')">
-                            Dumuria Strikers
-                        </div>
-                        <div class="team-tab" onclick="showTeamPlayers('Dumuria Warriors')">
-                            Dumuria Warriors
-                        </div>
-                        <div class="team-tab" onclick="showTeamPlayers('Dumuria Titans')">
-                            Dumuria Titans
-                        </div>
-                        <div class="team-tab" onclick="showTeamPlayers('Dumuria Vikings')">
-                            Dumuria Vikings
-                        </div>
+                <div class="class-section">
+                    <div class="class-title">▶ Class 11</div>
+                    <div class="player">
+                        <span class="player-name">CHANDAN</span>
+                        <span class="player-class">Class 11</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">JOTIRMOY</span>
+                        <span class="player-class">Class 11</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">RABBI</span>
+                        <span class="player-class">Class 11</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">RIFAT</span>
+                        <span class="player-class">Class 11</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">TURJO</span>
+                        <span class="player-class">Class 11</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SOURAV</span>
+                        <span class="player-class">Class 11</span>
+                        <span class="player-category">Normal Player</span>
                     </div>
                 </div>
 
-                <div class="result-actions">
-                    <button class="btn-download-pdf" id="downloadBtn" onclick="downloadAllResult()">
-                        📥 Download Complete Result
-                    </button>
-                    <button class="btn-download-pdf" onclick="showAllCongratulations()" style="background: #9333ea;">
-                        🎉 Show Congratulations to All
-                    </button>
+                <div class="class-section">
+                    <div class="class-title">▶ SSC (10)</div>
+                    <div class="player">
+                        <span class="player-name">AYON</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">MAHAMUDUL</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SIMANTO</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">PROTIK</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SHUVOJIT</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">FARHAN</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SAMIUL</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">RATUL</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SUDIPTO</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SALMAN</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SAKIB</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SANIM</span>
+                        <span class="player-class">SSC (10)</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
                 </div>
 
-                <div id="resultContainer"></div>
+                <div class="class-section">
+                    <div class="class-title">▶ Class 10</div>
+                    <div class="player">
+                        <span class="player-name">SAYON</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">RABBY</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">PIYASH</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">NISHAT</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SPORSHO</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SUJON</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">OPU</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SHAWON</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">TUHAN</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">AVIJIT</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SAKIBUR</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">MAHIR</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">DIBAKOR</span>
+                        <span class="player-class">Class 10</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                </div>
 
-                <button class="close-btn" onclick="hideResultSheet()">Close</button>
+                <div class="class-section">
+                    <div class="class-title">▶ Class 9</div>
+                    <div class="player">
+                        <span class="player-name">SAKIB</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">AL AMIN</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">ASHRAFUL</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">FERDOUS</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SALMAN</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SADMAM</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">ALVI</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">SWAPNIL</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">Raj Pal</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">Bappi</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">Walid Gazi</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">Hasib Gazi</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                    <div class="player">
+                        <span class="player-name">Sakib Ahmed</span>
+                        <span class="player-class">Class 9</span>
+                        <span class="player-category">Normal Player</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="pdfPreview" class="pdf-preview"></div>
-        <div id="teamImagePreview" class="pdf-preview"></div>
+        <button class="download-btn" onclick="generatePDF()">📥 Download PDF</button>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        let allPlayers = [];
-        let currentCategory = 'ICONIC';
-        let currentPlayerIndex = 0;
-        let currentTeam = 'Dumuria Kings';
-        let currentView = 'all';
-        const teams = ["Dumuria Kings", "Dumuria Strikers", "Dumuria Warriors", "Dumuria Titans", "Dumuria Vikings"];
-        
-        // Team budgets - each team starts with 2500
-        let teamBudgets = {
-            "Dumuria Kings": 2500,
-            "Dumuria Strikers": 2500,
-            "Dumuria Warriors": 2500,
-            "Dumuria Titans": 2500,
-            "Dumuria Vikings": 2500
-        };
-
-        // Lottery system variables
-        let shuffledIndices = []; // Randomized order of indices
-        let currentDisplayIndex = 0; // Current position in the shuffled list (for counter)
-        let shownPlayers = new Set(); // Track which players have been shown
-
-        function initializeLottery() {
-            // Get all players in current category
-            const currentPlayers = getCurrentCategoryPlayers();
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
             
-            // Filter only UNSOLD and NOT SHOWN players
-            const availablePlayers = [];
-            const availableIndices = [];
+            let yPos = 20;
+            const pageHeight = doc.internal.pageSize.height;
+            const margin = 20;
             
-            currentPlayers.forEach((player, index) => {
-                const playerId = `${player.category}-${player.name}`;
-                if (!player.auctionPrice && !shownPlayers.has(playerId)) {
-                    availablePlayers.push(player);
-                    availableIndices.push(index);
+            // Title
+            doc.setFontSize(24);
+            doc.setTextColor(102, 126, 234);
+            doc.text('CIVIL PREMIER LEAGUE', 105, yPos, { align: 'center' });
+            yPos += 15;
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Player Database', 105, yPos, { align: 'center' });
+            yPos += 15;
+
+            // Iconic Players
+            doc.setFontSize(16);
+            doc.setTextColor(255, 215, 0);
+            doc.text('Iconic Player Category', margin, yPos);
+            yPos += 10;
+
+            const iconicPlayers = [
+                ['HAMZA', 'Class 12'],
+                ['SHIHAB', 'Class 12'],
+                ['SAJIB', 'Class 12'],
+                ['SABBIR', 'Class 12'],
+                ['GALIB (Updated)', 'SSC (10)'],
+                ['BULBUL', 'Class 11'],
+                ['ARPON', 'Class 11'],
+                ['NUTON', 'Class Not Given'],
+                ['MRITTUNJOY', 'Class Not Given'],
+                ['SHAGOR', 'Class Not Given']
+            ];
+
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            iconicPlayers.forEach(player => {
+                if (yPos > pageHeight - 30) {
+                    doc.addPage();
+                    yPos = margin;
                 }
+                doc.text(`${player[0]} - ${player[1]} - Iconic Player`, margin + 5, yPos);
+                yPos += 7;
             });
-            
-            if (availablePlayers.length === 0) {
-                // All players are sold or shown
-                shuffledIndices = [];
-                currentDisplayIndex = 0;
-                return;
-            }
-            
-            // Create position slots for available players only
-            const totalPositions = availablePlayers.length;
-            const positionSlots = Array(totalPositions).fill(null);
-            
-            // First pass: Assign players with specific position ranges
-            availablePlayers.forEach((player, arrayIndex) => {
-                const originalIndex = availableIndices[arrayIndex];
+
+            yPos += 8;
+
+            // Normal Players
+            doc.setFontSize(16);
+            doc.setTextColor(102, 126, 234);
+            doc.text('Normal Player Category', margin, yPos);
+            yPos += 10;
+
+            const normalPlayers = {
+                'Class 12': ['DIBBO', 'ZIHAD', 'MUNNA', 'ARAFAT', 'SAJU', 'MASUD', 'JAHID', 'MOHIBUR', 'RANA'],
+                'Class 11': ['CHANDAN', 'JOTIRMOY', 'RABBI', 'RIFAT', 'TURJO', 'SOURAV'],
+                'SSC (10)': ['AYON', 'MAHAMUDUL', 'SIMANTO', 'PROTIK', 'SHUVOJIT', 'FARHAN', 'SAMIUL', 'RATUL', 'SUDIPTO', 'SALMAN', 'SAKIB', 'SANIM'],
+                'Class 10': ['SAYON', 'RABBY', 'PIYASH', 'NISHAT', 'SPORSHO', 'SUJON', 'OPU', 'SHAWON', 'TUHAN', 'AVIJIT', 'SAKIBUR', 'MAHIR', 'DIBAKOR'],
+                'Class 9': ['SAKIB', 'AL AMIN', 'ASHRAFUL', 'FERDOUS', 'SALMAN', 'SADMAM', 'ALVI', 'SWAPNIL', 'Raj Pal', 'Bappi', 'Walid Gazi', 'Hasib Gazi', 'Sakib Ahmed']
+            };
+
+            doc.setFontSize(10);
+            for (const [className, players] of Object.entries(normalPlayers)) {
+                if (yPos > pageHeight - 30) {
+                    doc.addPage();
+                    yPos = margin;
+                }
                 
-                if (player.positionRange && player.positionRange[0] !== null) {
-                    const [minPos, maxPos] = player.positionRange;
-                    
-                    // Find available position within range
-                    let availablePositions = [];
-                    for (let pos = minPos - 1; pos < maxPos && pos < totalPositions; pos++) {
-                        if (positionSlots[pos] === null) {
-                            availablePositions.push(pos);
-                        }
+                doc.setTextColor(102, 126, 234);
+                doc.setFontSize(12);
+                doc.text(className, margin + 2, yPos);
+                yPos += 7;
+                
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(10);
+                players.forEach(player => {
+                    if (yPos > pageHeight - 30) {
+                        doc.addPage();
+                        yPos = margin;
                     }
-                    
-                    if (availablePositions.length > 0) {
-                        // Randomly pick a position from available positions in range
-                        const randomPos = availablePositions[Math.floor(Math.random() * availablePositions.length)];
-                        positionSlots[randomPos] = originalIndex;
-                    }
-                }
-            });
-            
-            // Second pass: Fill remaining positions with unassigned players
-            const unassignedPlayers = [];
-            availableIndices.forEach((originalIndex) => {
-                if (!positionSlots.includes(originalIndex)) {
-                    unassignedPlayers.push(originalIndex);
-                }
-            });
-            
-            // Shuffle unassigned players
-            for (let i = unassignedPlayers.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [unassignedPlayers[i], unassignedPlayers[j]] = [unassignedPlayers[j], unassignedPlayers[i]];
-            }
-            
-            // Fill empty slots with unassigned players
-            let unassignedIndex = 0;
-            for (let pos = 0; pos < totalPositions; pos++) {
-                if (positionSlots[pos] === null && unassignedIndex < unassignedPlayers.length) {
-                    positionSlots[pos] = unassignedPlayers[unassignedIndex];
-                    unassignedIndex++;
-                }
-            }
-            
-            shuffledIndices = positionSlots;
-            currentDisplayIndex = 0;
-        }
-
-        function goToSpecificPosition() {
-            // Get all UNSOLD players in current category
-            const currentPlayers = getCurrentCategoryPlayers();
-            const unsoldPlayers = currentPlayers.filter(p => !p.auctionPrice);
-            
-            if (unsoldPlayers.length === 0) {
-                alert('⚠️ No UNSOLD players in this category!');
-                return;
-            }
-            
-            const position = prompt(`Show UNSOLD player (1-${unsoldPlayers.length}):\n\nTotal UNSOLD players: ${unsoldPlayers.length}`);
-            
-            if (!position) return;
-            
-            const num = parseInt(position);
-            
-            if (isNaN(num) || num < 1 || num > unsoldPlayers.length) {
-                alert(`⚠️ Please enter a valid number between 1 and ${unsoldPlayers.length}!`);
-                return;
-            }
-            
-            // Get the selected unsold player
-            const selectedPlayer = unsoldPlayers[num - 1];
-            
-            // Find this player's index in the full category list
-            const playerIndex = currentPlayers.findIndex(p => p.name === selectedPlayer.name && p.category === selectedPlayer.category);
-            
-            if (playerIndex !== -1) {
-                currentPlayerIndex = playerIndex;
-                displayCurrentPlayer();
-            }
-        }
-
-        function updateTeamBudgetDisplay() {
-            const budgetBox = document.getElementById('teamBudgetBox');
-            let html = '<h3>💰 Team Budgets</h3>';
-            
-            for (let team of teams) {
-                // Count players in this team
-                const playerCount = allPlayers.filter(p => p.team === team && p.auctionPrice).length;
-                
-                const spent = 2500 - teamBudgets[team];
-                html += `
-                    <div class="team-budget-item" onclick="editTeamBudget('${team}')" style="cursor: pointer;" title="Click to edit budget">
-                        <span class="team-budget-name">${team}</span>
-                        <span class="team-budget-amount">${teamBudgets[team]} <span style="font-size: 0.85em; color: #6b7280;">(${playerCount})</span></span>
-                    </div>
-                `;
-            }
-            
-            budgetBox.innerHTML = html;
-        }
-
-        function editTeamBudget(teamName) {
-            const currentBudget = teamBudgets[teamName];
-            const newBudget = prompt(`Edit ${teamName} Budget:\n\nCurrent Budget: ${currentBudget}\n\nEnter new budget:`);
-            
-            if (newBudget === null || newBudget.trim() === '') {
-                return; // User cancelled
-            }
-            
-            const budgetInt = parseInt(newBudget);
-            
-            if (isNaN(budgetInt) || budgetInt < 0) {
-                alert('⚠️ Please enter a valid positive number!');
-                return;
-            }
-            
-            const confirmChange = confirm(`Change ${teamName} budget?\n\nFrom: ${currentBudget}\nTo: ${budgetInt}\n\nThis will be the new budget for this team.`);
-            
-            if (confirmChange) {
-                teamBudgets[teamName] = budgetInt;
-                saveToStorage();
-                updateTeamBudgetDisplay();
-                alert(`✅ ${teamName} budget updated to ${budgetInt}!`);
-            }
-        }
-
-        function recalculateTeamBudgets() {
-            // Reset all budgets to 2500
-            for (let team of teams) {
-                teamBudgets[team] = 2500;
-            }
-            
-            // Subtract spent amounts for sold players
-            allPlayers.forEach(player => {
-                if (player.auctionPrice && player.team) {
-                    teamBudgets[player.team] -= parseInt(player.auctionPrice);
-                }
-            });
-            
-            updateTeamBudgetDisplay();
-        }
-
-        const teamWelcomeMessages = {
-            "Dumuria Kings": `{playerName} warm welcome to our team.
-We believe your skills and experience will make this team even stronger.
-We are proud to have you in the Dumuria Kings jersey this season.
-Best wishes for a successful season.`,
-            
-            "Dumuria Strikers": `Welcome {playerName}.
-Your talent and hard work will increase our team strength.
-Let's fight together and make this season memorable.
-Best wishes for you.`,
-            
-            "Dumuria Warriors": `Heartfelt welcome to {playerName}.
-This team means not just a game—it's a symbol of honor, responsibility and unity.
-We are hopeful that your participation will make the team stronger.`,
-            
-            "Dumuria Titans": `We are delighted to have {playerName}.
-Your skills and field mentality will play a big role in achieving our goals.
-Looking forward to the best performance together this season.`,
-            
-            "Dumuria Vikings": `Welcome {playerName} to the team.
-Your experience and dedication are valuable additions to our team.
-Let's play together, win together.`
-        };
-
-        const defaultPlayers = [
-            // Iconic Players (10 players) - with position ranges
-            { name: "Rana Islam Rabby", category: "ICONIC", basePrice: "100", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/RanaIslamRabby.jpeg", auctionPrice: null, team: null, positionRange: [1, 3] },
-            { name: "Shiab Gazi", category: "ICONIC", basePrice: "100", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/ShiabGazi.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Md. Jihad", category: "ICONIC", basePrice: "100", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdJihad.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Sojib Sheikh", category: "ICONIC", basePrice: "100", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/SojibSheikh.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Dibbojeet Mondal", category: "ICONIC", basePrice: "100", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/DibbojeetMondal.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Hamza Mulla", category: "ICONIC", basePrice: "100", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/HamzaMulla.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Md. Mobarok Hossan Munna", category: "ICONIC", basePrice: "100", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdMobarokHossanMunna.jpeg", auctionPrice: null, team: null, positionRange: [1, 10] },
-            { name: "David Warner", category: "ICONIC", basePrice: "100", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/RanaIslamRabby.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Virat Kohli", category: "ICONIC", basePrice: "100", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/ShiabGazi.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Steve Smith", category: "ICONIC", basePrice: "100", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdJihad.jpeg", auctionPrice: null, team: null, positionRange: null },
-
-            // Normal Players (50 players) - mostly null position ranges
-            { name: "Mitchell Starc", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/SojibSheikh.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Glenn Maxwell", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/DibbojeetMondal.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Trent Boult", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/HamzaMulla.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Marcus Stoinis", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdMobarokHossanMunna.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Pat Cummins", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/RanaIslamRabby.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Hardik Pandya", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/ShiabGazi.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Kagiso Rabada", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdJihad.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Quinton de Kock", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/SojibSheikh.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Chris Gayle", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/DibbojeetMondal.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Andre Russell", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/HamzaMulla.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Sunil Narine", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdMobarokHossanMunna.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Kieron Pollard", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/RanaIslamRabby.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Rohit Sharma", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/ShiabGazi.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "KL Rahul", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdJihad.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Rishabh Pant", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/SojibSheikh.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Jasprit Bumrah", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/DibbojeetMondal.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Mohammed Shami", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/HamzaMulla.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Yuzvendra Chahal", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdMobarokHossanMunna.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Ravindra Jadeja", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/RanaIslamRabby.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Shikhar Dhawan", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/ShiabGazi.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Bhuvneshwar Kumar", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdJihad.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Shardul Thakur", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/SojibSheikh.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Ishan Kishan", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/DibbojeetMondal.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Shreyas Iyer", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/HamzaMulla.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Sanju Samson", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdMobarokHossanMunna.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Ben Stokes", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/RanaIslamRabby.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Jos Buttler", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/ShiabGazi.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Jonny Bairstow", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdJihad.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Jason Roy", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/SojibSheikh.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Moeen Ali", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/DibbojeetMondal.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Sam Curran", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/HamzaMulla.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Liam Livingstone", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdMobarokHossanMunna.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Adil Rashid", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/RanaIslamRabby.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Rashid Khan", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/ShiabGazi.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Mohammad Nabi", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdJihad.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Mujeeb Ur Rahman", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/SojibSheikh.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Babar Azam", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/DibbojeetMondal.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Shaheen Afridi", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/HamzaMulla.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Shadab Khan", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdMobarokHossanMunna.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Haris Rauf", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/RanaIslamRabby.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Kane Williamson", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/ShiabGazi.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Tim Southee", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdJihad.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Martin Guptill", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/SojibSheikh.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Mitchell Santner", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/DibbojeetMondal.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "AB de Villiers", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/HamzaMulla.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Faf du Plessis", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdMobarokHossanMunna.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Imran Tahir", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/RanaIslamRabby.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Dale Steyn", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/ShiabGazi.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Lungi Ngidi", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/MdJihad.jpeg", auctionPrice: null, team: null, positionRange: null },
-            { name: "Aiden Markram", category: "NORMAL", basePrice: "50", imageURL: "https://munnacodsit.xyz/Cricket-Auction/im/SojibSheikh.jpeg", auctionPrice: null, team: null, positionRange: null },
-        ];
-        
-        function init() {
-            loadFromStorage();
-            recalculateTeamBudgets();
-            
-            // Initialize lottery system
-            initializeLottery();
-            
-            // Start with first player in shuffled order
-            currentDisplayIndex = 0;
-            currentPlayerIndex = shuffledIndices[0];
-            
-            displayCurrentPlayer();
-        }
-
-        function loadFromStorage() {
-            const storedPlayers = localStorage.getItem('cricketPlayers');
-            if (storedPlayers) {
-                const stored = JSON.parse(storedPlayers);
-                // Check if old categories (A, B, C) exist - if yes, reset to new data
-                const hasOldCategories = stored.some(p => ['A', 'B', 'C'].includes(p.category));
-                if (hasOldCategories) {
-                    // Reset to new default players with ICONIC and NORMAL categories
-                    allPlayers = JSON.parse(JSON.stringify(defaultPlayers));
-                    saveToStorage();
-                    console.log('Old data reset - New categories loaded');
-                } else {
-                    allPlayers = stored;
-                }
-            } else {
-                allPlayers = JSON.parse(JSON.stringify(defaultPlayers));
-                saveToStorage();
-            }
-        }
-
-        function saveToStorage() {
-            localStorage.setItem('cricketPlayers', JSON.stringify(allPlayers));
-        }
-
-        function getCurrentCategoryPlayers() {
-            // Get all players of current category
-            const categoryPlayers = allPlayers.filter(player => player.category === currentCategory);
-            
-            // Sort: SOLD players first, then UNSOLD players
-            return categoryPlayers.sort((a, b) => {
-                if (a.auctionPrice && !b.auctionPrice) return -1; // a is sold, b is unsold - a comes first
-                if (!a.auctionPrice && b.auctionPrice) return 1;  // a is unsold, b is sold - b comes first
-                return 0; // both same status, keep original order
-            });
-        }
-
-        function changeCategory(newCategory) {
-            currentCategory = newCategory;
-            document.querySelectorAll('.category-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelector(`.category-tab.${newCategory.toLowerCase()}`).classList.add('active');
-            
-            // Initialize lottery for new category
-            initializeLottery();
-            
-            // Start with first player in shuffled order
-            currentDisplayIndex = 0;
-            currentPlayerIndex = shuffledIndices[0];
-            
-            displayCurrentPlayer();
-        }
-
-        function displayCurrentPlayer() {
-            const screen = document.getElementById('playerScreen');
-            const currentPlayers = getCurrentCategoryPlayers();
-            
-            if (currentPlayers.length === 0) {
-                screen.innerHTML = '<div class="no-players">No players in this category.</div>';
-                return;
-            }
-            
-            // Check if all players are sold or shown
-            if (shuffledIndices.length === 0) {
-                screen.innerHTML = '<div class="no-players" style="color: #059669;">🎉 All remaining players have been shown!</div>';
-                return;
-            }
-            
-            const player = currentPlayers[currentPlayerIndex];
-            
-            // Mark this player as shown
-            const playerId = `${player.category}-${player.name}`;
-            shownPlayers.add(playerId);
-            
-            const badgeClass = `badge-${player.category.toLowerCase()}`;
-            
-            let teamSelector = '';
-            let soldLabel = '';
-            let releasedInfo = '';
-            
-            // Check if this is a released player (has oldTeam and oldPrice)
-            if (player.oldTeam && player.oldPrice) {
-                releasedInfo = `<div style="font-size: 1em; font-weight: bold; color: #dc2626; margin: 12px 0; padding: 10px; background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-radius: 15px; border: 2px solid #dc2626;">🔄 RELEASED FROM: ${player.oldTeam}<br/>Original Price: ${player.oldPrice}</div>`;
-            }
-            
-            if (player.auctionPrice) {
-                // Player is SOLD - show SOLD label
-                soldLabel = `<div style="font-size: 1.8em; font-weight: bold; color: #059669; margin: 12px 0; padding: 10px; background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-radius: 15px; box-shadow: 0 5px 15px rgba(5, 150, 105, 0.3);">✅ SOLD</div>`;
-            } else {
-                // Player is UNSOLD - show team selector
-                teamSelector = `<div class="team-selector">${teams.map(team => `<button class="team-btn ${player.team === team ? 'selected' : ''}" onclick="selectTeam('${team}')">${team}</button>`).join('')}</div>`;
-            }
-            
-            const categoryText = player.category === 'ICONIC' ? 'Iconic Player' : 'Normal Player';
-            
-            const priceDisplay = player.auctionPrice 
-                ? `<div class="price-info-box"><div class="base-price-display">💰 BASE PRICE: ${player.basePrice}</div><div class="sold-price-display">✅ SOLD PRICE: ${player.auctionPrice}</div>${player.team ? `<div class="base-price-display" style="color: #9333ea; margin-top: 10px;">🏆 Team: ${player.team}</div>` : ''}</div>`
-                : `<div class="price-info-box"><div class="base-price-display">💰 BASE PRICE: ${player.basePrice}</div><div class="sold-price-display" style="color: #ea580c;">UNSOLD</div></div>`;
-            
-            const imageHTML = player.imageURL 
-                ? `<img src="${player.imageURL}" alt="${player.name}" class="player-image-large">`
-                : `<div class="player-image-large" style="background-color: #f3f4f6; border: 8px solid #9ca3af; display: flex; align-items: center; justify-content: center; font-size: 1.5em; color: #6b7280;">No Image</div>`;
-            
-            // Use currentDisplayIndex for counter (sequential 1, 2, 3...) but only for UNSOLD players
-            screen.innerHTML = `${imageHTML}<div class="player-name-large">${player.name}</div>${releasedInfo}${soldLabel}<div class="player-category-badge ${badgeClass}">${categoryText}</div>${priceDisplay}${teamSelector}<div class="navigation-buttons"><button class="nav-btn" onclick="previousPlayer()" ${currentDisplayIndex === 0 ? 'disabled' : ''}>⬅️ Previous</button><button class="nav-btn" onclick="nextPlayer()" ${currentDisplayIndex === shuffledIndices.length - 1 ? 'disabled' : ''}>Next ➡️</button></div><div class="player-counter">${currentDisplayIndex + 1} / ${shuffledIndices.length}</div>`;
-            
-            // Set price input to current player's base price (not previous price)
-            setTimeout(() => {
-                const newPriceInput = document.getElementById('auctionPriceInput');
-                if (newPriceInput && !player.auctionPrice) {
-                    newPriceInput.value = player.basePrice;
-                } else if (newPriceInput && player.auctionPrice) {
-                    newPriceInput.value = '';
-                }
-            }, 0);
-        }
-
-        function nextPlayer() {
-            if (shuffledIndices.length === 0) {
-                alert('🎉 All players in this category are SOLD!');
-                return;
-            }
-            
-            if (currentDisplayIndex < shuffledIndices.length - 1) {
-                currentDisplayIndex++;
-                currentPlayerIndex = shuffledIndices[currentDisplayIndex];
-                displayCurrentPlayer();
-            }
-        }
-
-        function previousPlayer() {
-            if (shuffledIndices.length === 0) {
-                alert('🎉 All players in this category are SOLD!');
-                return;
-            }
-            
-            if (currentDisplayIndex > 0) {
-                currentDisplayIndex--;
-                currentPlayerIndex = shuffledIndices[currentDisplayIndex];
-                displayCurrentPlayer();
-            }
-        }
-
-        function selectTeam(teamName) {
-            const currentPlayers = getCurrentCategoryPlayers();
-            const player = currentPlayers[currentPlayerIndex];
-            const playerIndexInAll = allPlayers.findIndex(p => p.name === player.name && p.category === player.category);
-            
-            // Store current price before making changes
-            const priceInput = document.getElementById('auctionPriceInput');
-            const currentPrice = priceInput ? priceInput.value : null;
-            
-            if (playerIndexInAll !== -1) {
-                if (allPlayers[playerIndexInAll].team === teamName) {
-                    allPlayers[playerIndexInAll].team = null;
-                } else {
-                    allPlayers[playerIndexInAll].team = teamName;
-                }
-                saveToStorage();
-                displayCurrentPlayer();
-                
-                // Restore the price after display update if there was a price
-                setTimeout(() => {
-                    const newPriceInput = document.getElementById('auctionPriceInput');
-                    if (newPriceInput && currentPrice && currentPrice.trim() !== '') {
-                        newPriceInput.value = currentPrice;
-                    }
-                }, 0);
-            }
-        }
-
-        function createFireworks() {
-            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8800', '#ff0088'];
-            const welcomeContent = document.querySelector('.welcome-content');
-            
-            for (let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    const firework = document.createElement('div');
-                    firework.className = 'firework';
-                    firework.style.left = Math.random() * 100 + '%';
-                    firework.style.top = Math.random() * 100 + '%';
-                    firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    
-                    const tx = (Math.random() - 0.5) * 400;
-                    const ty = (Math.random() - 0.5) * 400;
-                    firework.style.setProperty('--tx', tx + 'px');
-                    firework.style.setProperty('--ty', ty + 'px');
-                    
-                    welcomeContent.appendChild(firework);
-                    
-                    setTimeout(() => firework.remove(), 1000);
-                }, i * 40);
-            }
-        }
-
-        function showWelcomePage(player) {
-            const overlay = document.getElementById('welcomePageOverlay');
-            const playerImageContainer = document.getElementById('welcomePlayerImageContainer');
-            const messageDiv = document.getElementById('welcomeMessage');
-            
-            playerImageContainer.innerHTML = '';
-            
-            if (player.imageURL) {
-                const img = document.createElement('img');
-                img.src = player.imageURL;
-                img.className = 'welcome-player-img';
-                img.alt = player.name;
-                playerImageContainer.appendChild(img);
-            } else {
-                const placeholder = document.createElement('div');
-                placeholder.className = 'welcome-player-img';
-                placeholder.style.backgroundColor = '#f3f4f6';
-                placeholder.style.display = 'flex';
-                placeholder.style.alignItems = 'center';
-                placeholder.style.justifyContent = 'center';
-                placeholder.style.fontSize = '2em';
-                placeholder.style.color = '#6b7280';
-                placeholder.textContent = 'No Image';
-                playerImageContainer.appendChild(placeholder);
-            }
-            
-            const message = teamWelcomeMessages[player.team].replace('{playerName}', player.name);
-            const lines = message.split('\n');
-            
-            // Check if this is a transfer (has oldTeam info in the recent context)
-            let transferInfo = '';
-            if (player.oldTeam && player.oldPrice) {
-                transferInfo = `
-                    <div style="margin: 20px 0; padding: 15px; background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-radius: 12px; border: 2px solid #dc2626;">
-                        <div style="font-size: 1.1em; font-weight: bold; color: #dc2626; margin-bottom: 8px;">🔄 TRANSFER</div>
-                        <div style="font-size: 0.95em; color: #7f1d1d;">Released from: ${player.oldTeam}</div>
-                        <div style="font-size: 0.95em; color: #7f1d1d;">Previous price: ${player.oldPrice}</div>
-                        <div style="font-size: 1.1em; font-weight: bold; color: #059669; margin-top: 8px;">New price: ${player.auctionPrice}</div>
-                    </div>
-                `;
-            } else {
-                // Normal purchase - show sold price
-                transferInfo = `
-                    <div style="margin: 20px 0; padding: 15px; background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-radius: 12px; border: 2px solid #059669;">
-                        <div style="font-size: 1.2em; font-weight: bold; color: #059669;">💰 Sold for: ${player.auctionPrice}</div>
-                    </div>
-                `;
-            }
-            
-            messageDiv.innerHTML = `
-                <div class="welcome-team-name">From ${player.team}</div>
-                <div class="welcome-player-name">${player.name}</div>
-                ${transferInfo}
-                ${lines.map(line => `<div class="welcome-text">${line}</div>`).join('')}
-                <div class="welcome-signature">— Management, ${player.team}</div>
-            `;
-            
-            overlay.style.display = 'flex';
-            createFireworks();
-        }
-
-        function closeWelcomePage() {
-            document.getElementById('welcomePageOverlay').style.display = 'none';
-        }
-
-        function incrementPrice() {
-            const currentPlayers = getCurrentCategoryPlayers();
-            if (currentPlayers.length === 0) {
-                alert('⚠️ No players!');
-                return;
-            }
-            
-            const player = currentPlayers[currentPlayerIndex];
-            const priceInput = document.getElementById('auctionPriceInput');
-            
-            let currentPrice = parseInt(priceInput.value) || parseInt(player.basePrice);
-            let increment = 0;
-            
-            // Price increment algorithm:
-            // 20-200: increase by 10
-            // 201-500: increase by 20
-            // 501+: increase by 50
-            
-            if (currentPrice >= 20 && currentPrice < 200) {
-                increment = 10;
-            } else if (currentPrice >= 200 && currentPrice < 500) {
-                increment = 20;
-            } else if (currentPrice >= 500) {
-                increment = 50;
-            } else if (currentPrice < 20) {
-                // If less than 20, increment by 10 to reach 20
-                increment = 10;
-            }
-            
-            const newPrice = currentPrice + increment;
-            priceInput.value = newPrice;
-            
-            // Don't reset to base price on display
-            priceInput.setAttribute('data-user-modified', 'true');
-        }
-
-        function decrementPrice() {
-            const currentPlayers = getCurrentCategoryPlayers();
-            if (currentPlayers.length === 0) {
-                alert('⚠️ No players!');
-                return;
-            }
-            
-            const player = currentPlayers[currentPlayerIndex];
-            const priceInput = document.getElementById('auctionPriceInput');
-            
-            let currentPrice = parseInt(priceInput.value) || parseInt(player.basePrice);
-            let decrement = 0;
-            
-            // Price decrement algorithm (reverse of increment):
-            // 21-200: decrease by 10
-            // 201-500: decrease by 20
-            // 501+: decrease by 50
-            
-            if (currentPrice > 500) {
-                decrement = 50;
-            } else if (currentPrice > 200 && currentPrice <= 500) {
-                decrement = 20;
-            } else if (currentPrice > 20 && currentPrice <= 200) {
-                decrement = 10;
-            } else {
-                // Cannot go below base price
-                alert('⚠️ Cannot go below BASE PRICE!');
-                return;
-            }
-            
-            const newPrice = currentPrice - decrement;
-            
-            // Make sure we don't go below base price
-            const basePrice = parseInt(player.basePrice);
-            if (newPrice < basePrice) {
-                alert('⚠️ Cannot go below BASE PRICE!');
-                priceInput.value = basePrice;
-                return;
-            }
-            
-            priceInput.value = newPrice;
-            
-            // Don't reset to base price on display
-            priceInput.setAttribute('data-user-modified', 'true');
-        }
-
-        function setAuctionPrice() {
-            const currentPlayers = getCurrentCategoryPlayers();
-            if (currentPlayers.length === 0) {
-                alert('⚠️ No players!');
-                return;
-            }
-            const priceInput = document.getElementById('auctionPriceInput');
-            const price = priceInput.value.trim();
-            if (!price || isNaN(price) || parseInt(price) <= 0) {
-                alert('⚠️ Enter correct price!');
-                return;
-            }
-            const player = currentPlayers[currentPlayerIndex];
-            
-            // Check if player already sold
-            if (player.auctionPrice) {
-                alert('⚠️ This player is already sold!');
-                return;
-            }
-            
-            if (!player.team) {
-                alert('⚠️ Select a team first!');
-                // Keep the current price in input - don't clear it
-                return;
-            }
-            
-            // Check if team has enough budget
-            const priceInt = parseInt(price);
-            if (teamBudgets[player.team] < priceInt) {
-                alert(`⚠️ ${player.team} does not have enough budget!\nAvailable: ${teamBudgets[player.team]}\nRequired: ${priceInt}`);
-                return;
-            }
-            
-            const playerIndexInAll = allPlayers.findIndex(p => p.name === player.name && p.category === player.category);
-            if (playerIndexInAll !== -1) {
-                allPlayers[playerIndexInAll].auctionPrice = price;
-                saveToStorage();
-                
-                // Recalculate budgets
-                recalculateTeamBudgets();
-                
-                showWelcomePage(allPlayers[playerIndexInAll]);
-                
-                // Reinitialize lottery to exclude sold player
-                initializeLottery();
-                
-                // Move to next unsold player or show completion message
-                if (shuffledIndices.length > 0) {
-                    // Start from beginning after selling
-                    currentDisplayIndex = 0;
-                    currentPlayerIndex = shuffledIndices[0];
-                }
-                
-                displayCurrentPlayer();
-                priceInput.value = '';
-            }
-        }
-
-        function showAllCongratulations() {
-            const soldPlayers = allPlayers.filter(p => p.auctionPrice && p.team);
-            
-            if (soldPlayers.length === 0) {
-                alert('⚠️ No players sold yet!');
-                return;
-            }
-            
-            let currentIndex = 0;
-            
-            function showNextCongratulation() {
-                if (currentIndex >= soldPlayers.length) {
-                    alert('✅ All congratulations shown!');
-                    return;
-                }
-                
-                const player = soldPlayers[currentIndex];
-                showWelcomePage(player);
-                
-                // Override close button to show next player
-                const closeBtn = document.querySelector('.close-welcome-btn');
-                if (closeBtn) {
-                    closeBtn.onclick = function() {
-                        closeWelcomePage();
-                        currentIndex++;
-                        if (currentIndex < soldPlayers.length) {
-                            setTimeout(() => showNextCongratulation(), 300);
-                        }
-                    };
-                    closeBtn.textContent = currentIndex < soldPlayers.length - 1 ? `➡️ Next (${currentIndex + 1}/${soldPlayers.length})` : `✖ Finish (${soldPlayers.length}/${soldPlayers.length})`;
-                }
-            }
-            
-            showNextCongratulation();
-        }
-
-        function showResultSheet() {
-            const resultSheetOverlay = document.getElementById('resultSheetOverlay');
-            currentView = 'all';
-            currentTeam = 'Dumuria Kings';
-            
-            document.querySelectorAll('.view-tab').forEach(tab => {
-                tab.classList.remove('active-view');
-            });
-            document.querySelectorAll('.view-tab')[0].classList.add('active-view');
-            
-            document.getElementById('teamTabsContainer').style.display = 'none';
-            document.getElementById('downloadBtn').textContent = '📥 Download Complete Result';
-            document.getElementById('downloadBtn').onclick = downloadAllResult;
-            
-            showAllResult();
-            resultSheetOverlay.style.display = 'flex';
-        }
-
-        function changeView(viewType) {
-            currentView = viewType;
-            
-            document.querySelectorAll('.view-tab').forEach(tab => {
-                tab.classList.remove('active-view');
-            });
-            event.target.classList.add('active-view');
-            
-            if (viewType === 'all') {
-                document.getElementById('teamTabsContainer').style.display = 'none';
-                document.getElementById('downloadBtn').textContent = '📥 Download Complete Result';
-                document.getElementById('downloadBtn').onclick = downloadAllResult;
-                showAllResult();
-            } else {
-                document.getElementById('teamTabsContainer').style.display = 'block';
-                document.getElementById('downloadBtn').textContent = '📥 Download Team Image';
-                document.getElementById('downloadBtn').onclick = downloadTeamImage;
-                
-                document.querySelectorAll('.team-tab').forEach(tab => {
-                    tab.classList.remove('active-team');
+                    doc.text(`${player} - ${className} - Normal Player`, margin + 5, yPos);
+                    yPos += 6;
                 });
-                document.querySelectorAll('.team-tab')[0].classList.add('active-team');
                 
-                currentTeam = 'Dumuria Kings';
-                showTeamPlayers('Dumuria Kings');
+                yPos += 5;
             }
+
+            // Save PDF
+            doc.save('Civil_Premier_League_Players.pdf');
         }
-
-        function showAllResult() {
-            const resultContainer = document.getElementById('resultContainer');
-            const playersToShow = allPlayers;
-            
-            if (playersToShow.length === 0) {
-                resultContainer.innerHTML = '<p style="text-align: center; color: #dc2626; font-weight: bold;">No player data available.</p>';
-            } else {
-                let tableHTML = '<table><thead><tr><th>Name</th><th>Category</th><th>BASE PRICE</th><th>SOLD PRICE</th><th>Team</th><th>Status</th></tr></thead><tbody>';
-                playersToShow.forEach(player => {
-                    const status = player.auctionPrice ? 'SOLD' : 'UNSOLD';
-                    const priceDisplay = player.auctionPrice ? player.auctionPrice : '---';
-                    const teamDisplay = player.team ? player.team : '---';
-                    const statusColor = player.auctionPrice ? '#059669' : '#ea580c';
-                    const categoryText = player.category === 'ICONIC' ? 'Iconic' : 'Normal';
-                    tableHTML += `<tr><td>${player.name}</td><td>${categoryText}</td><td>${player.basePrice}</td><td>${priceDisplay}</td><td style="font-weight: bold; color: #9333ea;">${teamDisplay}</td><td style="font-weight: bold; color: ${statusColor};">${status}</td></tr>`;
-                });
-                tableHTML += '</tbody></table>';
-                resultContainer.innerHTML = tableHTML;
-            }
-        }
-
-        function showTeamPlayers(teamName) {
-            currentTeam = teamName;
-            
-            document.querySelectorAll('.team-tab').forEach(tab => {
-                tab.classList.remove('active-team');
-            });
-            event.target.classList.add('active-team');
-            
-            const resultContainer = document.getElementById('resultContainer');
-            const teamPlayers = allPlayers.filter(p => p.team === teamName && p.auctionPrice);
-            
-            if (teamPlayers.length === 0) {
-                resultContainer.innerHTML = '<div class="no-team-players">No players in this team yet.</div>';
-                return;
-            }
-            
-            let html = '<div class="team-players-grid">';
-            teamPlayers.forEach(player => {
-                const imageHTML = player.imageURL 
-                    ? `<img src="${player.imageURL}" alt="${player.name}" class="player-card-image">`
-                    : `<div class="player-card-image" style="background-color: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 1em; color: #6b7280;">No Image</div>`;
-                
-                html += `
-                    <div class="player-card">
-                        ${imageHTML}
-                        <div class="player-card-name">${player.name}</div>
-                        <div class="player-card-price">💰 ${player.auctionPrice}</div>
-                        <button onclick="releasePlayerForTransfer('${player.name}', '${player.category}')" style="margin-top: 8px; padding: 6px 12px; background: #dc2626; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85em; font-weight: bold;">🔄 Release</button>
-                    </div>
-                `;
-            });
-            html += '</div>';
-            
-            resultContainer.innerHTML = html;
-        }
-
-        function releasePlayerForTransfer(playerName, playerCategory) {
-            const playerIndex = allPlayers.findIndex(p => p.name === playerName && p.category === playerCategory);
-            
-            if (playerIndex === -1 || !allPlayers[playerIndex].auctionPrice || !allPlayers[playerIndex].team) {
-                alert('⚠️ Player not found or not sold!');
-                return;
-            }
-            
-            const player = allPlayers[playerIndex];
-            const originalPrice = parseInt(player.auctionPrice);
-            const oldTeam = player.team;
-            
-            // Confirm release
-            const confirmRelease = confirm(`🔄 RELEASE PLAYER FOR TRANSFER\n\nPlayer: ${player.name}\nCurrent Team: ${oldTeam}\nOriginal Price: ${originalPrice}\n\n⚠️ IMPORTANT:\n- ${oldTeam} will LOSE ${originalPrice} permanently\n- When this player is sold again, only NEW price will be added\n- Example: If sold for 500, ${oldTeam} gets only 500 (not ${originalPrice})\n\nAre you sure you want to release this player?`);
-            
-            if (!confirmRelease) {
-                return;
-            }
-            
-            // Permanently deduct the original price from team budget
-            teamBudgets[oldTeam] -= originalPrice;
-            
-            // Store old team info (for transfer)
-            player.oldTeam = oldTeam;
-            player.oldPrice = originalPrice;
-            
-            // Mark as released (not sold, not in any team)
-            player.auctionPrice = null;
-            player.team = null;
-            
-            // Remove from shown players so they can appear in lottery again
-            const playerId = `${player.category}-${player.name}`;
-            shownPlayers.delete(playerId);
-            
-            // Save and update display
-            saveToStorage();
-            updateTeamBudgetDisplay();
-            
-            // Reinitialize lottery
-            initializeLottery();
-            
-            // Close result sheet and show player screen
-            hideResultSheet();
-            
-            // Find and show this player
-            const categoryPlayers = getCurrentCategoryPlayers();
-            const newIndex = categoryPlayers.findIndex(p => p.name === player.name);
-            if (newIndex !== -1) {
-                currentPlayerIndex = newIndex;
-                displayCurrentPlayer();
-            }
-            
-            alert(`✅ Player released!\n\n${player.name} released from ${oldTeam}.\n\n💸 ${oldTeam} lost: ${originalPrice}\nCurrent budget: ${teamBudgets[oldTeam]}\n\n💡 When sold again, NEW price will be added to ${oldTeam}.`);
-        }
-
-        // Modify setAuctionPrice to handle transfer players
-        const originalSetAuctionPrice = setAuctionPrice;
-        
-        function setAuctionPrice() {
-            const currentPlayers = getCurrentCategoryPlayers();
-            if (currentPlayers.length === 0) {
-                alert('⚠️ No players!');
-                return;
-            }
-            const priceInput = document.getElementById('auctionPriceInput');
-            const price = priceInput.value.trim();
-            if (!price || isNaN(price) || parseInt(price) <= 0) {
-                alert('⚠️ Enter correct price!');
-                return;
-            }
-            const player = currentPlayers[currentPlayerIndex];
-            
-            // Check if player already sold
-            if (player.auctionPrice) {
-                alert('⚠️ This player is already sold!');
-                return;
-            }
-            
-            if (!player.team) {
-                alert('⚠️ Select a team first!');
-                return;
-            }
-            
-            // Check if team has enough budget
-            const priceInt = parseInt(price);
-            if (teamBudgets[player.team] < priceInt) {
-                alert(`⚠️ ${player.team} does not have enough budget!\nAvailable: ${teamBudgets[player.team]}\nRequired: ${priceInt}`);
-                return;
-            }
-            
-            const playerIndexInAll = allPlayers.findIndex(p => p.name === player.name && p.category === player.category);
-            if (playerIndexInAll !== -1) {
-                const playerData = allPlayers[playerIndexInAll];
-                
-                // Check if this is a transferred player
-                if (playerData.oldTeam && playerData.oldPrice) {
-                    const oldTeam = playerData.oldTeam;
-                    const oldPrice = parseInt(playerData.oldPrice);
-                    const basePrice = parseInt(playerData.basePrice);
-                    const newTeam = playerData.team;
-                    
-                    // Confirm transfer
-                    const confirmTransfer = confirm(`🔄 TRANSFER CONFIRMATION\n\nPlayer: ${playerData.name}\nReleased from: ${oldTeam} (Original: ${oldPrice})\nBase Price: ${basePrice}\nNew Team: ${newTeam}\nNew Price: ${priceInt}\n\n💰 Money Flow:\n- ${newTeam} will pay: ${priceInt}\n- ${oldTeam} will receive: ${priceInt} (Full amount)\n\nContinue?`);
-                    
-                    if (!confirmTransfer) {
-                        return;
-                    }
-                    
-                    // Set auction price
-                    playerData.auctionPrice = price;
-                    
-                    // Deduct from new team
-                    teamBudgets[newTeam] -= priceInt;
-                    
-                    // Add full amount to old team
-                    teamBudgets[oldTeam] += priceInt;
-                    
-                    // Clear transfer data
-                    delete playerData.oldTeam;
-                    delete playerData.oldPrice;
-                    
-                    saveToStorage();
-                    recalculateTeamBudgets();
-                    
-                    showWelcomePage(playerData);
-                    
-                    // Reinitialize lottery
-                    initializeLottery();
-                    if (shuffledIndices.length > 0) {
-                        currentDisplayIndex = 0;
-                        currentPlayerIndex = shuffledIndices[0];
-                    }
-                    
-                    displayCurrentPlayer();
-                    priceInput.value = '';
-                    
-                    alert(`✅ Transfer completed!\n\n${playerData.name}:\n- Released from: ${oldTeam}\n- Joined: ${newTeam}\n- Transfer fee: ${priceInt}\n\n${oldTeam} received: ${priceInt}\n${newTeam} paid: ${priceInt}`);
-                    
-                    
-                    
-                } else {
-                    // Normal auction (not a transfer)
-                    playerData.auctionPrice = price;
-                    saveToStorage();
-                    
-                    recalculateTeamBudgets();
-                    showWelcomePage(playerData);
-                    
-                    // Reinitialize lottery
-                    initializeLottery();
-                    if (shuffledIndices.length > 0) {
-                        currentDisplayIndex = 0;
-                        currentPlayerIndex = shuffledIndices[0];
-                    }
-                    
-                    displayCurrentPlayer();
-                    priceInput.value = '';
-                }
-            }
-        }
-
-        function hideResultSheet(event) {
-            if (event && event.target.id !== 'resultSheetOverlay') {
-                return;
-            }
-            document.getElementById('resultSheetOverlay').style.display = 'none';
-        }
-
-        // Track reset button clicks
-        let resetClickCount = 0;
-        let resetClickTimer = null;
-
-        function resetData() {
-            resetClickCount++;
-            
-            // Clear previous timer
-            if (resetClickTimer) {
-                clearTimeout(resetClickTimer);
-            }
-            
-            if (resetClickCount === 1) {
-                alert("⚠️ WARNING - Click 1/3\n\nClick the DELETE button 2 more times to confirm complete reset.");
-                
-                // Reset counter after 5 seconds if not clicked again
-                resetClickTimer = setTimeout(() => {
-                    resetClickCount = 0;
-                }, 5000);
-                return;
-            } else if (resetClickCount === 2) {
-                alert("⚠️ WARNING - Click 2/3\n\nClick the DELETE button 1 MORE TIME to permanently delete all data!");
-                
-                // Reset counter after 5 seconds if not clicked again
-                resetClickTimer = setTimeout(() => {
-                    resetClickCount = 0;
-                }, 5000);
-                return;
-            } else if (resetClickCount === 3) {
-                // Final confirmation
-                const confirmReset = confirm("🚨 FINAL WARNING - Click 3/3\n\nAre you ABSOLUTELY SURE you want to delete ALL player data?\n\nThis action CANNOT be undone!\n\nClick OK to DELETE EVERYTHING or Cancel to stop.");
-                
-                if (confirmReset) {
-                    localStorage.removeItem('cricketPlayers');
-                    allPlayers = JSON.parse(JSON.stringify(defaultPlayers));
-                    saveToStorage();
-                    currentPlayerIndex = 0;
-                    
-                    // Reset shown players
-                    shownPlayers.clear();
-                    
-                    // Reinitialize lottery
-                    initializeLottery();
-                    if (shuffledIndices.length > 0) {
-                        currentDisplayIndex = 0;
-                        currentPlayerIndex = shuffledIndices[0];
-                    }
-                    
-                    recalculateTeamBudgets();
-                    displayCurrentPlayer();
-                    alert("✅ All data has been successfully deleted and reset to default.");
-                } else {
-                    alert("❌ Reset cancelled. No data was deleted.");
-                }
-                
-                // Reset counter
-                resetClickCount = 0;
-                if (resetClickTimer) {
-                    clearTimeout(resetClickTimer);
-                }
-            }
-        }
-
-        function startSecondRound() {
-            // Count unsold players
-            const unsoldCount = allPlayers.filter(p => !p.auctionPrice).length;
-            
-            if (unsoldCount === 0) {
-                alert("⚠️ No UNSOLD players! Everyone has been sold.");
-                return;
-            }
-            
-            // First confirmation
-            const confirm1 = confirm(`⚠️ WARNING - CONFIRMATION 1/4\n\nAre you sure you want to start the 2nd round?\n\n${unsoldCount} UNSOLD players will have BASE PRICE set to 20 and their team selection will be reset.\n\nClick OK to continue or Cancel to stop.`);
-            if (!confirm1) {
-                alert("❌ 2nd round cancelled.");
-                return;
-            }
-            
-            // Second confirmation
-            const confirm2 = confirm(`⚠️ WARNING - CONFIRMATION 2/4\n\nThis action will reset BASE PRICE to 20 for all UNSOLD players!\n\nAre you absolutely sure?\n\nClick OK to continue or Cancel to stop.`);
-            if (!confirm2) {
-                alert("❌ 2nd round cancelled.");
-                return;
-            }
-            
-            // Third confirmation
-            const confirm3 = confirm(`⚠️ WARNING - CONFIRMATION 3/4\n\nLast chance to reconsider!\n\n${unsoldCount} UNSOLD players will be reset.\n\nClick OK to continue or Cancel to stop.`);
-            if (!confirm3) {
-                alert("❌ 2nd round cancelled.");
-                return;
-            }
-            
-            // Fourth and final confirmation
-            const confirm4 = confirm(`⚠️ FINAL WARNING - CONFIRMATION 4/4\n\nThis is your LAST confirmation!\n\nAfter this, BASE PRICE will be changed to 20 for ${unsoldCount} UNSOLD players.\n\nClick OK to PROCEED or Cancel to STOP.`);
-            if (!confirm4) {
-                alert("❌ 2nd round cancelled. No changes were made.");
-                return;
-            }
-            
-            // All 4 confirmations passed - proceed with changes
-            allPlayers.forEach(player => {
-                if (!player.auctionPrice) {
-                    player.basePrice = "20";
-                    player.team = null; // Reset team selection for unsold players
-                }
-            });
-            
-            // Reset shown players list - now unsold players can appear again
-            shownPlayers.clear();
-            
-            saveToStorage();
-            currentPlayerIndex = 0;
-            
-            // Reinitialize lottery
-            initializeLottery();
-            if (shuffledIndices.length > 0) {
-                currentDisplayIndex = 0;
-                currentPlayerIndex = shuffledIndices[0];
-            }
-            
-            displayCurrentPlayer();
-            alert(`✅ 2nd round has started!\n\n${unsoldCount} UNSOLD players now have BASE PRICE of 20.\n\nAll players are available again in the lottery.`);
-        }
-
-        function downloadAllResult() {
-            const playersToShow = allPlayers;
-            const playersPerPage = 25;
-            const totalPages = Math.ceil(playersToShow.length / playersPerPage);
-            const previewContainer = document.getElementById('pdfPreview');
-            previewContainer.innerHTML = '';
-            previewContainer.style.display = 'block';
-            
-            for (let pageNum = 0; pageNum < totalPages; pageNum++) {
-                const startIdx = pageNum * playersPerPage;
-                const endIdx = Math.min(startIdx + playersPerPage, playersToShow.length);
-                const pagePlayers = playersToShow.slice(startIdx, endIdx);
-                const pageDiv = document.createElement('div');
-                pageDiv.className = 'pdf-page';
-                pageDiv.innerHTML = `<h1>CIVIL PREMIER LEAGUE</h1><table><thead><tr><th>Name</th><th>Category</th><th>BASE PRICE</th><th>SOLD PRICE</th><th>Team</th><th>Status</th></tr></thead><tbody>${pagePlayers.map(player => {
-                    const status = player.auctionPrice ? 'SOLD' : 'UNSOLD';
-                    const priceDisplay = player.auctionPrice ? player.auctionPrice : '---';
-                    const teamDisplay = player.team ? player.team : '---';
-                    const statusClass = player.auctionPrice ? 'sold' : 'unsold';
-                    const categoryText = player.category === 'ICONIC' ? 'Iconic' : 'Normal';
-                    return `<tr><td>${player.name}</td><td>${categoryText}</td><td>${player.basePrice}</td><td>${priceDisplay}</td><td>${teamDisplay}</td><td class="${statusClass}">${status}</td></tr>`;
-                }).join('')}</tbody></table><div class="pdf-page-number">Page ${pageNum + 1}/${totalPages}</div>`;
-                previewContainer.appendChild(pageDiv);
-            }
-            
-            setTimeout(function() {
-                processPages(0, previewContainer.querySelectorAll('.pdf-page'));
-            }, 100);
-        }
-        
-        function processPages(index, pages) {
-            if (index >= pages.length) {
-                const previewContainer = document.getElementById('pdfPreview');
-                previewContainer.style.display = 'none';
-                previewContainer.innerHTML = '';
-                alert(`✅ Total ${pages.length} page images downloaded!`);
-                return;
-            }
-            
-            html2canvas(pages[index], {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: '#ffffff',
-                width: 794,
-                height: 1123
-            }).then(function(canvas) {
-                const link = document.createElement('a');
-                link.download = `Complete-Result-Page-${index + 1}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                
-                setTimeout(function() {
-                    processPages(index + 1, pages);
-                }, 500);
-            });
-        }
-
-        async function downloadTeamImage() {
-            const teamPlayers = allPlayers.filter(p => p.team === currentTeam && p.auctionPrice);
-            
-            if (teamPlayers.length === 0) {
-                alert('⚠️ No players in this team!');
-                return;
-            }
-            
-            const previewContainer = document.getElementById('teamImagePreview');
-            previewContainer.innerHTML = '';
-            previewContainer.style.display = 'block';
-            previewContainer.style.position = 'fixed';
-            previewContainer.style.left = '0';
-            previewContainer.style.top = '0';
-            
-            const pageDiv = document.createElement('div');
-            pageDiv.style.width = '1000px';
-            pageDiv.style.minHeight = 'auto';
-            pageDiv.style.padding = '40px';
-            pageDiv.style.background = 'white';
-            pageDiv.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
-            
-            let html = `
-                <div style="text-align: center; margin-bottom: 30px; padding: 25px; background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); border-radius: 15px; box-shadow: 0 10px 30px rgba(147, 51, 234, 0.3);">
-                    <h1 style="color: white; font-size: 42px; margin: 0 0 15px 0; font-weight: bold;">🏆 ${currentTeam}</h1>
-                    <div style="color: white; font-size: 20px; font-weight: bold; margin-bottom: 8px;">Player List - 2025</div>
-                    <div style="color: white; font-size: 18px; opacity: 0.9;">Total Players: ${teamPlayers.length}</div>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px;">
-            `;
-            
-            const imagePromises = teamPlayers.map(player => {
-                return new Promise((resolve) => {
-                    if (player.imageURL) {
-                        const img = new Image();
-                        img.crossOrigin = 'anonymous';
-                        img.onload = () => resolve({ player, img });
-                        img.onerror = () => resolve({ player, img: null });
-                        img.src = player.imageURL;
-                    } else {
-                        resolve({ player, img: null });
-                    }
-                });
-            });
-            
-            const loadedImages = await Promise.all(imagePromises);
-            
-            loadedImages.forEach(({ player, img }) => {
-                let imageHTML;
-                if (img) {
-                    imageHTML = `<img src="${player.imageURL}" crossorigin="anonymous" alt="${player.name}" style="width: 140px; height: 140px; border-radius: 50%; object-fit: contain; object-position: center; background-color: #f3f4f6; margin: 0 auto 15px auto; display: block; border: 4px solid #9333ea; box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);">`;
-                } else {
-                    imageHTML = `<div style="width: 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; border: 4px solid #9ca3af; font-size: 16px; color: #6b7280; font-weight: bold;">No Image</div>`;
-                }
-                
-                html += `
-                    <div style="text-align: center; padding: 20px; border: 3px solid #9333ea; border-radius: 12px; background: white; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-                        ${imageHTML}
-                        <div style="font-size: 16px; font-weight: bold; color: #1f2937; margin-bottom: 8px; line-height: 1.4;">${player.name}</div>
-                        <div style="font-size: 18px; font-weight: bold; color: #059669; padding: 8px 12px; background: #d1fae5; border-radius: 8px; display: inline-block;">💰 ${player.auctionPrice}</div>
-                    </div>
-                `;
-            });
-            
-            html += '</div>';
-            html += `
-                <div style="text-align: center; margin-top: 35px; padding: 18px; background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border-radius: 10px; border: 2px solid #d1d5db;">
-                    <div style="font-size: 15px; color: #1f2937; font-weight: 600; line-height: 1.6;">
-                        CIVIL PREMIER LEAGUE
-                    </div>
-                </div>
-            `;
-            pageDiv.innerHTML = html;
-            previewContainer.appendChild(pageDiv);
-            
-            setTimeout(function() {
-                html2canvas(pageDiv, {
-                    scale: 2,
-                    useCORS: true,
-                    allowTaint: false,
-                    backgroundColor: '#ffffff',
-                    width: 1000,
-                    logging: false,
-                    imageTimeout: 15000,
-                    onclone: function(clonedDoc) {
-                        // Ensure all images are loaded in cloned document
-                        const images = clonedDoc.querySelectorAll('img');
-                        images.forEach(img => {
-                            img.style.display = 'block';
-                        });
-                    }
-                }).then(function(canvas) {
-                    const link = document.createElement('a');
-                    link.download = `${currentTeam}-Player-List-${Date.now()}.png`;
-                    link.href = canvas.toDataURL('image/png', 1.0);
-                    link.click();
-                    
-                    previewContainer.style.display = 'none';
-                    previewContainer.innerHTML = '';
-                    alert(`✅ ${currentTeam} player list downloaded successfully!`);
-                }).catch(function(error) {
-                    console.error('Error generating image:', error);
-                    previewContainer.style.display = 'none';
-                    previewContainer.innerHTML = '';
-                    alert('⚠️ Error creating image. Please try again.');
-                });
-            }, 1500);
-        }
-
-        window.onload = init;
-
-        // Add keyboard shortcut: Ctrl+M to decrease price, Ctrl+I to increase price
-        // Ctrl+P to go to specific position
-        document.addEventListener('keydown', function(event) {
-            // Check if Ctrl+M is pressed (Ctrl key + M key)
-            if ((event.ctrlKey || event.metaKey) && event.key === 'm') {
-                event.preventDefault(); // Prevent default browser behavior
-                decrementPrice();
-            }
-            
-            // Check if Ctrl+I is pressed (Ctrl key + I key) for increment
-            if ((event.ctrlKey || event.metaKey) && event.key === 'i') {
-                event.preventDefault(); // Prevent default browser behavior
-                incrementPrice();
-            }
-            
-            // Check if Ctrl+A is pressed for position selection
-            if ((event.ctrlKey || event.metaKey) && event.key === 'a') {
-                event.preventDefault();
-                goToSpecificPosition();
-            }
-        });
     </script>
 </body>
 </html>
